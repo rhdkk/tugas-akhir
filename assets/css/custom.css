@@ -1,0 +1,147 @@
+.container {
+	margin-top:40px;
+}
+#head-aktif {
+	margin-top:51px;  
+	padding-top:5px;
+	padding-bottom:0px;
+	background-color:#fffbe7;
+	border-bottom: 5px solid #f1e8bc;
+	z-index:100;
+}
+#body-aktif {
+  font-size:0.9em;	
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	margin: 0;
+	line-height: 1.2;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: #fff4b8;
+}
+
+.skin-yellow {
+	background-color:#fffdf2;
+}
+
+.skin-white {
+	background-color:white;
+}
+
+.divider {
+  height: 1px;
+  width:100%;
+  display:block; /* for use on default inline elements like span */
+  margin: 9px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+
+.error-form {
+	margin-top:-5px;
+	font-size:.95em;
+	margin-bottom:0px;
+}
+.error-form-akun {
+	margin-top:-5px;	
+	font-size:.95em;
+	margin-bottom:0px;
+}
+.error-form-jadwal {
+	margin-top:-5px;	
+	font-size:.95em;
+	margin-bottom:0px;
+}
+.error-form-jadwal li{
+	text-indent: -20px;
+	padding-left: 28px;
+}
+.error-form-dosen {
+	margin-top:-5px;
+	font-size:.95em;
+	margin-bottom:0px;
+}
+
+.list-group-table {
+	margin-bottom: 0px;
+}
+
+.list-group-item {
+  padding: 3px 24px 2px 5px;
+	margin-right: 5px;	
+}
+
+.del-list {
+  cursor: pointer;
+  position: absolute;
+  top: 11.3px;
+	color: #fff;
+	font-size:8pt;
+	font-weight:bold;
+  right: 1.3px;
+  padding: 3.4px 5px 2px 5px;
+  transform: translate(0%, -50%);
+	border-radius: 3px;
+	background-color: #d9534f;	
+	opacity: 0.15;
+}
+a.del-list{
+	text-decoration: none;
+	color: #fff;
+}
+
+.del-list:hover {opacity: 1;}
+
+.bg-white {
+	background-color:#fff;
+}
+
+/*select2 validate*/
+.has-error .select2 .selection .select2-selection {
+    border-color: #a94442;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+.has-success .select2 .selection .select2-selection {
+    border-color: #3c763d;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+
+/*Custom List*/
+.custom-list {
+	margin-top: 0px;
+	padding-left: 0px;
+}
+.custom-list li {
+	display: table;
+	table-layout: fixed;
+	padding: 5px 0;
+	width: 100%;
+}
+.custom-list li:last-child {
+	border-bottom: none;
+}
+.custom-list li:nth-child(even) {
+	background-color: #f7f7f7;
+}
+.custom-list .list-icon {
+	display: table-cell;
+	width: 50px;
+	vertical-align: middle;
+	text-align: center;
+}
+.custom-list .list-icon i {
+	font-size: 24px;	
+}
+.custom-list .list-content {
+	display: table-cell;
+	padding-left: 0px;
+	vertical-align: middle;
+}
+/* Hover effect for the label */
+.file-label:hover {
+  background-color: #0056b3;
+}
