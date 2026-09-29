@@ -3,11 +3,17 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Md_dosen extends CI_Model {
 	public function getRevisi($id)
 	{
-		$str = "SELECT r.id_rev, u.id_uji, u.tgl_uji, tu.nm_tuji, p.jenjang, p.nm_ps, p.tipe_rev, m.nim, m.nm_mhs, r.tgl_rev, r.acc_rev, r.id_rev, dp.id_dospem ";
-		$str .= "FROM revisi r, ujian u, prodi p, ajuan a, mahasiswa m, dosen d, tahap_ujian tu, det_ujian du, dospem dp ";
-		$str .= "WHERE dp.id_dosen=d.id_dosen AND dp.nim=m.nim AND p.id_ps=tu.id_ps AND m.nim=a.nim AND tu.id_tuji=a.id_tuji ";
-		$str .= "AND a.id_ajuan=u.id_ajuan AND u.id_uji=du.id_uji AND d.id_dosen=du.id_dosen AND du.id_det_uji=r.id_det_uji ";
-		$str .= "AND dp.stat=1 AND r.acc_rev=1 AND r.stat=1 AND d.id_user='".$id."' AND (p.tipe_rev=2 OR (p.tipe_rev=1 AND dp.jab_dosen=1)) ";
+		$str = "SELECT r.id_rev, u.id_uji, u.tgl_uji, tu.nm_tuji, p.jenjang, p.nm_ps, p.tipe_rev, m.nim, m.nm_mhs, r.tgl_rev, r.acc_rev, dp.id_dospem ";
+		$str .= "FROM revisi r ";
+		$str .= "JOIN det_ujian du ON du.id_det_uji = r.id_det_uji ";
+		$str .= "JOIN ujian u ON u.id_uji = du.id_uji ";
+		$str .= "JOIN ajuan a ON a.id_ajuan = u.id_ajuan ";
+		$str .= "JOIN mahasiswa m ON m.nim = a.nim ";
+		$str .= "JOIN tahap_ujian tu ON tu.id_tuji = a.id_tuji ";
+		$str .= "JOIN prodi p ON p.id_ps = tu.id_ps ";
+		$str .= "JOIN dospem dp ON dp.nim = m.nim AND dp.stat = 1 ";
+		$str .= "JOIN dosen d ON d.id_dosen = dp.id_dosen ";
+		$str .= "WHERE r.acc_rev=1 AND r.stat=1 AND d.id_user='".$id."' AND (p.tipe_rev = 2 OR (p.tipe_rev = 1 AND dp.jab_dosen = 1))";
 		$str .= "ORDER BY r.tgl_rev ";
 		$data = $this->db->query($str);
 		return $data->result_array();				
