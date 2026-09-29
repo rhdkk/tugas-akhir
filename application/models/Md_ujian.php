@@ -76,7 +76,8 @@ class Md_ujian extends CI_Model {
 		$str .= "JOIN ajuan a ON u.id_ajuan = a.id_ajuan ";
 		$str .= "JOIN tahap_ujian tu ON a.id_tuji = tu.id_tuji ";
 		$str .= "JOIN dospem dp ON dp.id_dosen = du.id_dosen AND dp.nim = a.nim ";
-		$str .= "WHERE du.id_uji = (SELECT id_uji FROM det_ujian WHERE id_det_uji='".$id."')";
+		$str .= "WHERE du.id_uji = (SELECT id_uji FROM det_ujian WHERE id_det_uji='".$id."') ";
+		$str .= "GROUP BY du.id_uji, tu.nilai_p1, tu.nilai_p2";
 		$query = $this->db->query($str);		
 		return $query->row();
 	}
