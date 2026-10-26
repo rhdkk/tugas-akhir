@@ -99,7 +99,7 @@ class Prodi extends CI_Controller{
 				$row[] = $d['pers_tuji'];
 				$row[] = $d['nilai_p1'];
 				$row[] = $d['nilai_p2'];
-				$row[] = "<div class='btn-group' role='group'><a class='btn btn-xs btn-info' href='javascript:void()' title='Syarat' onclick='edit_tahap(\"".$d['id_tuji']."\")'><i class='fas fa-pencil-alt'></i></a><a class='btn btn-xs btn-warning' href='javascript:void()' title='Edit' onclick='edit_tahap(\"".$d['id_tuji']."\")'><i class='fas fa-pencil-alt'></i></a></div>";
+				$row[] = "<div class='btn-group' role='group'><a class='btn btn-xs btn-info' href='javascript:void()' title='Syarat' onclick='syarat_tahap(\"".$d['id_tuji']."\")'><i class='fa fa-tasks'></i></a><a class='btn btn-xs btn-warning' href='javascript:void()' title='Edit' onclick='edit_tahap(\"".$d['id_tuji']."\")'><i class='fas fa-pencil-alt'></i></a></div>";
 				
 				$ary[] = $row;
 			}

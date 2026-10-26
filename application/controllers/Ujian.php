@@ -7,6 +7,9 @@ class Ujian extends CI_Controller{
 		$this->load->library('mysql_table');	
 		$this->load->library('excel');					
 		$this->load->model('md_ujian');			
+		$this->load->model('md_tuji');			
+		$this->load->model('md_syarat');			
+		$this->load->model('md_berkas');			
 		$this->load->library('mine');	
 	} 
 	
@@ -25,6 +28,174 @@ class Ujian extends CI_Controller{
 			$data['mhs'] = $this->md_mahasiswa->getDetil($id_user);						
 			$this->load->view('vw_kelas',$data);
 		} else redirect('login','refresh');
+	}
+	
+	/* fungsi hilangkan NBSP, rapikan whitespace, trim */
+	protected function norm ($v) 
+	{
+		if ($v === null) return '';
+		$v = (string) $v;
+		$v = preg_replace('/\x{00A0}/u', ' ', $v); 
+		$v = preg_replace('/\s+/u', ' ', $v);      
+		return trim($v);
+	}
+	
+	public function ajax_list_syarat($id)
+	{		
+		$data = $this->md_tuji->getSyaratUji($id);
+		$ary = array();
+		$total = count($data);
+		$nm_tahap = "";
+		foreach($data as $d)		
+		{	
+			$row = array();
+			if ($d['jns_syarat']==1) $tJns = "Wajib";
+			elseif ($d['jns_syarat']==2) $tJns = "Tidak";
+			
+			$nm_tahap = $d['nm_tuji'];
+			$row[] = $d['urut_syarat'];
+			$row[] = $d['nm_berkas'];
+			$row[] = $tJns;
+			$row[] = "<div class='btn-group' role='group'><a class='btn btn-xs btn-warning' href='javascript:void()' title='Edit' onclick='edit_syarat(\"".$d['id_syarat']."\")'><i class='fas fa-pencil-alt'></i></a></div>";
+			
+			$ary[] = $row;
+		}
+		$output = array("id_tahap"=>$id, "nm_tahap"=>$nm_tahap, "data"=>$ary);
+		echo json_encode($output);		
+	}
+	
+	public function ajax_unlisted_syarat($id)
+	{		
+		$data = $this->md_tuji->getUnlistedSyarat($id);
+		$ary = array();
+		foreach($data as $d)		
+		{	
+			$row = array();
+			$row[] = $d['id_berkas'];
+			$row[] = $d['nm_berkas'];			
+			$ary[] = $row;
+		}
+		$output = array("data"=>$ary);
+		echo json_encode($output);		
+	}
+	
+	public function add_syarat()
+	{
+		$wkt = new DateTime("now", new DateTimeZone('Asia/jakarta'));
+		$th = $wkt->format('y');
+		$tgl = $wkt->format('Y-m-d');
+		$jam = $wkt->format('H:i:s');
+		
+		$urut = $this->md_syarat->getMaxUrut($this->input->post('idTahapSyarat'));		
+		$idSyarat = $this->md_syarat->getMaxID();
+		$dtSyarat['id_syarat'] = $idSyarat;
+		$dtSyarat['id_tuji'] = $this->input->post('idTahapSyarat');
+		if (!empty($this->input->post('txSyarat')))			
+		{
+			$dtBerkas['id_berkas'] = $this->md_berkas->getMaxID();
+			$dtBerkas['nm_berkas'] = $this->norm($this->input->post('txSyarat'));
+			$this->md_berkas->save($dtBerkas);
+			
+			$dtBerkas['id_log_berkas'] = $this->md_berkas->getMaxLogID($th);
+			$dtBerkas['id_user'] = $this->session->userdata('id_user_thesis');;
+			$dtBerkas['dt'] = $tgl." ".$jam;
+			$dtBerkas['act'] = 1;		
+			$this->md_berkas->saveLog($dtBerkas);
+			
+			$dtSyarat['id_berkas'] = $dtBerkas['id_berkas'];
+		}
+		else $dtSyarat['id_berkas'] = $this->input->post('cbSyarat');
+		$dtSyarat['jns_syarat'] = $this->input->post('jenisSyarat');
+		$dtSyarat['urut_syarat'] = $urut;
+		$this->md_syarat->save($dtSyarat);
+		
+		$dtSyarat['id_log_syarat'] = $this->md_syarat->getMaxLogID($th);
+		$dtSyarat['id_user'] = $this->session->userdata('id_user_thesis');;
+		$dtSyarat['dt'] = $tgl." ".$jam;
+		$dtSyarat['act'] = 1;		
+		$this->md_syarat->saveLog($dtSyarat);
+		$save = 1;
+		
+		echo json_encode(array("status"=>TRUE, "save"=>$save));
+	}
+	
+	public function update_syarat()
+	{
+		$idSyarat = $this->input->post('idSyarat');
+		$dt = $this->md_syarat->getData(null,$idSyarat);
+
+		$lbDB   = ['id_berkas', 'jns_syarat'];
+		$lbForm = ['cbSyarat', 'jenisSyarat'];
+
+		$data = [];
+		$pen = 0;
+		$n = 0;
+		
+		$wkt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+		$th  = $wkt->format('y');
+		$tgl = $wkt->format('Y-m-d');
+		$jam = $wkt->format('H:i:s');
+	
+		if (!empty($this->input->post('txSyarat')))
+		{	
+			$dtBerkas['id_berkas'] = $this->md_berkas->getMaxID();
+			$dtBerkas['nm_berkas'] = $this->norm($this->input->post('txSyarat'));
+			$this->md_berkas->save($dtBerkas);
+			
+			$dtBerkas['id_log_berkas'] = $this->md_berkas->getMaxLogID($th);
+			$dtBerkas['id_user'] = $this->session->userdata('id_user_thesis');;
+			$dtBerkas['dt'] = $tgl." ".$jam;
+			$dtBerkas['act'] = 1;		
+			$this->md_berkas->saveLog($dtBerkas);
+			
+			$idBerkas = $dtBerkas['id_berkas'];
+		}
+		else $idBerkas = $this->input->post('cbSyarat');
+		$sama = ($dt->id_berkas === $idBerkas);
+		if (!$sama) 
+		{
+			$n++;
+			$data['id_berkas'] = $idBerkas;
+		}
+
+		$sama = ($dt->jns_syarat === $this->input->post('jenisSyarat'));
+		if (!$sama) 
+		{
+			$n++;
+			$data['jns_syarat'] = $this->input->post('jenisSyarat');			
+		}
+		
+		$save = 0;
+		if ($n>0) 
+		{
+			$this->md_syarat->update($data, ['id_syarat' => $idSyarat]);
+
+			$data['id_syarat'] = $idSyarat;
+			$data['id_log_syarat'] = $this->md_syarat->getMaxLogID($th);
+			$data['id_user'] = $this->session->userdata('id_user_thesis');
+			$data['dt'] = $tgl.' '.$jam;
+			$data['act'] = 2;
+			
+			$this->md_syarat->saveLog($data);
+			$save = 1;
+		}
+
+		echo json_encode(["status"=>TRUE, "save"=>$save]);
+	}
+	
+	public function ajax_syarat($id)
+	{
+		$data = $this->md_syarat->getData(null,$id);
+		$row = array(
+			'id_syarat' => $data->id_syarat,
+			'id_tuji' => $data->id_tuji,		
+			'id_berkas' => $data->id_berkas,		
+			'nm_berkas' => $data->nm_berkas,		
+			'jns_syarat' => $data->jns_syarat,
+			'urut_syarat' => $data->urut_syarat
+		);			
+		$output = array("data" => $row);
+		echo json_encode($output);
 	}
 	
 	public function expPDF($tipe,$id)

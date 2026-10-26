@@ -145,3 +145,65 @@ a.del-list{
 .file-label:hover {
   background-color: #0056b3;
 }
+
+/* custom header for well*/
+
+/* Header */
+.well-header {
+  min-height: 16.42857143px;
+  padding: 10px 0;
+  margin: 0 -19px 19px -19px; /* negative side margins to reach well edges */
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.well-lg .well-header {
+  padding: 12px 0;
+  margin: 0 -24px 24px -24px;
+}
+
+/* Smaller well */
+.well-sm.well-with-header {
+  padding-top: 0;
+}
+.well-sm .well-header {
+  padding: 6px 0;
+  margin: 0 -9px 9px -9px;
+}
+
+/* Title */
+.well-title {
+  line-height: 1.42857143;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Optional close button, matching modal-header .close behavior */
+.well-header .close {
+  margin-top: -2px;
+}
+
+/* Optional: clickable/collapsible header variant */
+.well-header[data-toggle="collapse"] {
+  cursor: pointer;
+}
+.well-header[data-toggle="collapse"]:hover {
+  background-color: #ececec;
+}
+
+/* Native select — remove right corners */
+.input-group .ext-select {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Select2 3.x */
+.input-group .select2-container .select2-choice {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Select2 4.x */
+.input-group .select2-container--default .select2-selection--single {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}

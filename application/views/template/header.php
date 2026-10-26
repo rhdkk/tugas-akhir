@@ -16,13 +16,13 @@
     <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/bootstrap-toggle.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/dataTables.bootstrap.css">       
 		<link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/responsive.dataTables.css">   
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-		
-		<script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 		<link rel="stylesheet" href="<?php echo base_url(); ?>/assets/css/custom.css">               
+		
+		<script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>		
 		<script src="<?php echo base_url(); ?>/assets/js/jquery.js"></script>
     <script src="<?php echo base_url(); ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>/assets/js/bootstrap-datepicker.js"></script>

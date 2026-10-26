@@ -47,6 +47,24 @@ class Md_tuji extends CI_Model {
 		$data = $this->db->query($str);
 		return $data->result_array();				
 	}	
+	public function getUnlistedSyarat($id)
+	{
+		$str = "SELECT b.id_berkas, b.nm_berkas FROM berkas b WHERE b.stat = 1 AND ";
+		$str .= "NOT EXISTS (SELECT 1 FROM syarat_ujian s WHERE s.id_berkas = b.id_berkas AND s.id_tuji = ".$id." AND s.stat = 1)";
+		$data = $this->db->query($str);
+		return $data->result_array();				
+	}	
+	public function getSyaratUji($id)
+	{
+		$str = "SELECT tu.nm_tuji, b.nm_berkas, s.urut_syarat, s.id_syarat, s.jns_syarat, b.id_berkas, b.naskah ";
+		$str .= "FROM syarat_ujian s ";
+		$str .= "INNER JOIN tahap_ujian tu ON s.id_tuji=tu.id_tuji ";
+		$str .= "INNER JOIN berkas b ON s.id_berkas=b.id_berkas ";
+		$str .= "WHERE tu.id_tuji=".$id." AND s.stat=1 ";
+		$str .= "ORDER BY s.jns_syarat, b.naskah";
+		$data = $this->db->query($str);
+		return $data->result_array();				
+	}	
 	public function getFirst($prodi)
 	{
 		$str = "SELECT id_tuji FROM tahap_ujian WHERE stat=1 AND id_ps=".$prodi." ORDER BY urut_tuji ASC LIMIT 1";

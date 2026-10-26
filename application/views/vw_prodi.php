@@ -149,7 +149,7 @@ $this->load->view('template/navigation',$var);
 						<input name="idTahap" id="idTahap" type="hidden"/>
 						<input name="nPemb" id="nPemb" type="hidden"/>
 						<input name="nPeng" id="nPeng" type="hidden"/>
-						<div class="modal-header">
+						<div class="modal-header">							
 							<h4 class="modal-title" id="title-form">Form Tahap Ujian</h4>
 						</div>
 						<div class="modal-body form">        
@@ -204,12 +204,71 @@ $this->load->view('template/navigation',$var);
 						</div>
 					</form>
 				</div>
-				<div class="well bg-white" id="data_tahap" style="padding-bottom:0px">
+				<div class="well bg-white" id="form_syarat" style="display: none; padding:0px">
+					<form action="#" id="fSyarat" class="form-horizontal" method="POST">
+						<input name="idTahapSyarat" id="idTahapSyarat" type="hidden"/>
+						<input name="idSyarat" id="idSyarat" type="hidden"/>
+						<div class="modal-header">							
+							<h4 class="modal-title" id="title-form-syarat">Form Syarat Ujian</h4>
+						</div>
+						<div class="modal-body form">
+							<div class="form-body">
+								<div class="form-group">
+									<label class="control-label col-md-3">Syarat</label>
+									<div class="col-md-8">
+										<div class="input-group" id="syaratNow" style="margin-bottom: 8px;">
+											<select class="form-control ext-select" name="cbSyarat" id="cbSyarat" style="width:100%"></select>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-success" id="newSyarat" title="Baru">
+													<span class="glyphicon glyphicon-plus"></span>
+												</button>
+											</span>
+										</div>
+										<div class="input-group" id="syaratBaru" style="display: none">
+											<input name="txSyarat" id="txSyarat" class="form-control" type="text" />
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-danger" id="hideSyarat" title="Batal">
+													<span class="glyphicon glyphicon-minus"></span>
+												</button>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-3">Jenis</label>
+									<div class="col-md-3">
+										<select class="form-control" name="jenisSyarat" id="jenisSyarat">
+											<option value="1">Wajib</option>
+											<option value="2">Tidak</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" id="btSaveSyarat" class="btn btn-primary">Save</button>
+							<button type="button" id="btBatalSyarat" class="btn btn-danger">Batal</button>
+						</div>
+					</form>
+				</div>
+				<div class="well bg-white" id="data_tahap" style="padding-bottom:0px">					
 					<button type="button" id="addTahap" class="btn btn-xs btn-primary"><span class="	glyphicon glyphicon-plus"></span> Tambah</button>
 					<input name="idPS" id="idPS" type="hidden"/><input name="p1" id="p1" type="hidden"/><input name="p2" id="p2" type="hidden"/>
 					<table id="tbTahap" class="table table-striped table-hover display responsive" cellspacing="0" width="100%">
 						<thead><tr><th>#</th><th>Tahap Ujian</th><th>Jenis</th><th>Penilai</th><th>%</th><th>% Pembimbing</th><th>% Penguji</th><th></th></tr></thead>
 						<tfoot><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot>
+					</table>
+				</div>
+				<div class="well bg-white" id="data_syarat" style="display: none; padding-top:0px; padding-bottom:0px">
+					<div class="well-header" style="display: flex; align-items: center; justify-content: space-between;">								
+						<h4 class="well-title" id="title-syarat" style="margin: 0; padding-left:19px">Well Title</h4>
+						<button type="button" id="closeSyarat" class="btn-xs close" style="padding-right:19px; font-size:15px; margin: 0;"><span class="glyphicon glyphicon-chevron-down"></span></button>
+					</div>
+					<button type="button" id="addSyarat" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-plus"></span> Tambah</button>						
+					<input name="idTU" id="idTU" type="hidden"/>
+					<table id="tbSyarat" class="table table-striped table-hover display responsive" cellspacing="0" width="100%">
+						<thead><tr><th>#</th><th>Syarat Ujian</th><th>Jenis</th><th></th></tr></thead>
+						<tfoot><tr><td></td><td></td><td></td><td></td></tr></tfoot>
 					</table>
 				</div>
 			</div>			
@@ -222,7 +281,7 @@ $this->load->view('template/navigation',$var);
 		<div class="col-md-12">
 			<div class="well bg-white">
 				<table id="tbProdi" class="table table-striped table-hover display responsive" cellspacing="0" width="100%">
-					<thead><tr><th>Jurusan</th><th>Program Studi</th><th>Jumlah Pembimbing</th><th>Jumlah Penguji</th><th>Pilih Pembimbing?</th><th>ACC Revisi</th><th>Tahap Ujian</th><th></th></tr></thead>
+					<thead><tr><th>Departemen</th><th>Program Studi</th><th>Jumlah Pembimbing</th><th>Jumlah Penguji</th><th>Pilih Pembimbing?</th><th>ACC Revisi</th><th>Tahap Ujian</th><th></th></tr></thead>
 					<tfoot><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot>
 				</table>
 			</div>
