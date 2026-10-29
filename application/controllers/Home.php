@@ -1195,7 +1195,7 @@ class Home extends CI_Controller{
 		$tgl = $dt->format('Y-m-d');
 		$jam = $dt->format('H:i:s');
 		
-		$config['upload_path'] = './upload/';			
+		$config['upload_path'] = FCPATH . './upload/';			
 		$config['overwrite'] = true;
 		$config['max_size']  = 20971520;
 		$config['allowed_types']='pdf';
@@ -1297,11 +1297,12 @@ class Home extends CI_Controller{
 					$dataLogDaj['id_berma'] = $idBerma;
 					$this->md_ajuan->saveLogDet($dataLogDaj);			
 				}
-				/*else
+				else
 				{
 					$stat = false;
 					$err = $this->upload->display_errors();
-				}*/
+					log_message('error', "Upload failed for {$nmS}: " . $error);
+				}
 			}
 		}		
 		echo json_encode(array("status"=>true));

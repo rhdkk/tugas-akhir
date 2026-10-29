@@ -10,6 +10,7 @@ class Ujian extends CI_Controller{
 		$this->load->model('md_tuji');			
 		$this->load->model('md_syarat');			
 		$this->load->model('md_berkas');			
+		$this->load->model('md_kriteria');			
 		$this->load->library('mine');	
 	} 
 	
@@ -44,7 +45,6 @@ class Ujian extends CI_Controller{
 	{		
 		$data = $this->md_tuji->getSyaratUji($id);
 		$ary = array();
-		$total = count($data);
 		$nm_tahap = "";
 		foreach($data as $d)		
 		{	
@@ -57,6 +57,25 @@ class Ujian extends CI_Controller{
 			$row[] = $d['nm_berkas'];
 			$row[] = $tJns;
 			$row[] = "<div class='btn-group' role='group'><a class='btn btn-xs btn-warning' href='javascript:void()' title='Edit' onclick='edit_syarat(\"".$d['id_syarat']."\")'><i class='fas fa-pencil-alt'></i></a></div>";
+			
+			$ary[] = $row;
+		}
+		$output = array("id_tahap"=>$id, "nm_tahap"=>$nm_tahap, "data"=>$ary);
+		echo json_encode($output);		
+	}
+	
+	public function ajax_list_nilai($id)
+	{		
+		$data = $this->md_tuji->getKriteriaNilai($id);
+		$ary = array();
+		$nm_tahap = "";
+		foreach($data as $d)		
+		{	
+			$row = array();
+			$nm_tahap = $d['nm_tuji'];
+			$row[] = $d['nm_kriteria'];
+			$row[] = $d['pers_nilai'];
+			$row[] = "<div class='btn-group' role='group'><a class='btn btn-xs btn-warning' href='javascript:void()' title='Edit' onclick='edit_kriteria(\"".$d['id_kriteria']."\")'><i class='fas fa-pencil-alt'></i></a></div>";
 			
 			$ary[] = $row;
 		}
@@ -114,6 +133,30 @@ class Ujian extends CI_Controller{
 		$dtSyarat['dt'] = $tgl." ".$jam;
 		$dtSyarat['act'] = 1;		
 		$this->md_syarat->saveLog($dtSyarat);
+		$save = 1;
+		
+		echo json_encode(array("status"=>TRUE, "save"=>$save));
+	}
+	
+	public function add_kriteria()
+	{
+		$wkt = new DateTime("now", new DateTimeZone('Asia/jakarta'));
+		$th = $wkt->format('y');
+		$tgl = $wkt->format('Y-m-d');
+		$jam = $wkt->format('H:i:s');
+		
+		$idKrit = $this->md_kriteria->getMaxID();
+		$dtKrit['id_kriteria'] = $idKrit;
+		$dtKrit['id_tuji'] = $this->input->post('idTahapNilai');
+		$dtKrit['nm_kriteria'] = $this->input->post('nilai');
+		$dtKrit['pers_nilai'] = $this->input->post('pNilai');
+		$this->md_kriteria->save($dtKrit);
+		
+		$dtKrit['id_log_kriteria'] = $this->md_kriteria->getMaxLogID($th);
+		$dtKrit['id_user'] = $this->session->userdata('id_user_thesis');;
+		$dtKrit['dt'] = $tgl." ".$jam;
+		$dtKrit['act'] = 1;		
+		$this->md_kriteria->saveLog($dtKrit);
 		$save = 1;
 		
 		echo json_encode(array("status"=>TRUE, "save"=>$save));
@@ -183,6 +226,60 @@ class Ujian extends CI_Controller{
 		echo json_encode(["status"=>TRUE, "save"=>$save]);
 	}
 	
+	public function update_kriteria()
+	{
+		$idKrit = $this->input->post('idNilai');
+		$dt = $this->md_kriteria->getData(null, $idKrit);
+
+		$lbDB   = ['nm_kriteria', 'pers_nilai'];
+		$lbForm = ['nilai', 'pNilaiThp'];
+
+		$data = [];
+		$pen = 0;
+		$n = 0;
+
+		for ($i=0; $i<count($lbDB); $i++) 
+		{
+			$dbField = $lbDB[$i];
+			$formField = $lbForm[$i];
+
+			$rawDB = $dt->$dbField;
+			$rawForm = $this->input->post($formField);
+
+			$valDB = $this->norm($rawDB);
+			$valForm = $this->norm($rawForm);
+			
+			$sama = ($valDB === $valForm);			
+			if (!$sama) 
+			{
+				$n++;
+				$data[$dbField] = $this->norm($rawForm);				
+			}
+		}
+		
+		$save = 0;
+		if ($n>0) 
+		{
+			$this->md_kriteria->update($data, ['id_kriteria' => $idKrit]);
+
+			$wkt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$th  = $wkt->format('y');
+			$tgl = $wkt->format('Y-m-d');
+			$jam = $wkt->format('H:i:s');
+
+			$data['id_kriteria'] = $idKrit;
+			$data['id_log_kriteria'] = $this->md_kriteria->getMaxLogID($th);
+			$data['id_user'] = $this->session->userdata('id_user_thesis');
+			$data['dt'] = $tgl.' '.$jam;
+			$data['act'] = 2;
+			
+			$this->md_kriteria->saveLog($data);
+			$save = 1;
+		}
+
+		echo json_encode(["status"=>TRUE, "save"=>$save]);
+	}
+	
 	public function ajax_syarat($id)
 	{
 		$data = $this->md_syarat->getData(null,$id);
@@ -193,6 +290,19 @@ class Ujian extends CI_Controller{
 			'nm_berkas' => $data->nm_berkas,		
 			'jns_syarat' => $data->jns_syarat,
 			'urut_syarat' => $data->urut_syarat
+		);			
+		$output = array("data" => $row);
+		echo json_encode($output);
+	}
+	
+	public function ajax_kriteria($id)
+	{
+		$data = $this->md_kriteria->getData(null,$id);
+		$row = array(
+			'id_kriteria' => $data->id_kriteria,
+			'id_tuji' => $data->id_tuji,		
+			'nm_kriteria' => $data->nm_kriteria,			
+			'pers_nilai' => $data->pers_nilai		
 		);			
 		$output = array("data" => $row);
 		echo json_encode($output);

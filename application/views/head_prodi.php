@@ -108,6 +108,47 @@
         }				
 		});
 		
+		var tabelNilai = $('#tbNilai').DataTable({
+				"ajax": {
+					"url": "<?php echo site_url('ujian/ajax_list_nilai'); ?>/001",
+					"type": "GET",
+					"dataType": "json",
+					"dataSrc": function(json) {
+						currentIdTU = json.id_tahap || '';
+						currentNmTU = json.nm_tahap || '';
+            return json.data || [];
+					},
+					"error": function(xhr, error, thrown) {
+						console.error('Ajax error:', error);
+						console.error('Response:', xhr.responseText);
+					}
+				},
+				"searching": false,
+				"paging": false,
+				"autoWidth": false,
+				"info": false,
+				"columns": [
+					null,{"width":"20px"},{"width":"50px"}
+				],
+				"order": [[0, "asc"]],
+				"columnDefs": [
+					{"targets": [1,-1], "orderable": false},
+					{"className": "text-center", "targets": [1,-1]}
+				],
+				"initComplete": function() {
+					if (currentNmTU) {
+						$('#title-nilai').text("Kriteria Penilaian - "+currentNmTU);						
+						$('#title-form').text('Form Kriteria Penilaian');
+					}
+        },
+        "drawCallback": function() {
+					if (currentNmTU) {
+						$('#title-nilai').text("Kriteria Penilaian - "+currentNmTU);						
+						$('#title-form').text('Form Kriteria Penilaian');
+					}
+        }				
+		});
+		
 		$(".btn-tambah").click(function() {
 			$('#fProdi')[0].reset();	
 			$('#modal_form').modal('show');			
@@ -129,6 +170,15 @@
 			$('#data_syarat').slideToggle(300);
 			$('#fSyarat').trigger('reset');
 			$('#fSyarat').validate().resetForm();		
+			$('.form-group').removeClass('has-error');			
+			$('.form-group').removeClass('has-success');
+		});
+		
+		$("#btBatalNilai").click(function() {			
+			$('#form_nilai').slideToggle(200);
+			$('#data_nilai').slideToggle(300);
+			$('#fNilai').trigger('reset');
+			$('#fNilai').validate().resetForm();		
 			$('.form-group').removeClass('has-error');			
 			$('.form-group').removeClass('has-success');
 		});
@@ -184,6 +234,16 @@
 			});
 		});	
 		
+		$("#addNilai").click(function() {
+			$('#fNilai').trigger('reset');
+			$('#fNilai').validate().resetForm();
+			$('#title-form-nilai').text('Tambah Kriteria Penilaian - ' + currentNmTU);				
+			$('#idTahapNilai').val(currentIdTU);
+			$('#btSaveNilai').text('Simpan');
+			$('#form_nilai').slideDown(400);
+			$('#data_nilai').slideUp(300);			
+		});	
+		
 		$('.ext-select').select2();
 		
 		$("#closeSyarat").click(function() {			
@@ -199,6 +259,11 @@
 		$("#hideSyarat").click(function() {			
 			$('#syaratNow').show();
 			$('#syaratBaru').hide();
+		});
+		
+		$("#closeNilai").click(function() {			
+			$('#data_tahap').slideToggle(200);
+			$('#data_nilai').slideToggle(300);
 		});
 		
 		$('#penilai').on('change', function() {
@@ -302,6 +367,31 @@
 			submitHandler: function () {
 				save_syarat();
 			}
+		});
+		
+		$('#fNilai').validate({ 
+			rules: {
+				nilai: { required:true, maxlength:50 },
+				pNilaiThp: { required:true }
+			},
+			highlight: function(element) {
+				$(element).closest('.form-group').removeClass('has-success').addClass('has-error');    								
+			},
+			unhighlight: function(element) {
+				$(element).closest('.form-group').removeClass('has-error').addClass('has-success');								
+			},
+			errorElement: 'span',
+			errorClass: 'help-block',
+			errorPlacement: function(error, element) {
+				if (element.hasClass('ext-select')) {
+        	error.insertAfter('.select2-container');
+				} else {
+					error.insertAfter(element);					
+				}
+			},
+			submitHandler: function() {
+				save_nilai();
+			}			
 		});
 		
 		$( "#fHapus" ).submit(function(event) {
@@ -423,6 +513,41 @@
 			});
 		}
 		
+		function save_nilai(){
+			var url,state,msg;
+			state = $("#btSaveNilai").text();
+			if (state=='Simpan') 
+			{ url = "<?php echo site_url('ujian/add_kriteria')?>"; }
+      else
+      { url = "<?php echo site_url('ujian/update_kriteria')?>"; }
+
+			$.ajax({
+				url : url,
+				type: "POST",
+				data: $('#fNilai').serialize(),
+				dataType: "JSON",
+				success: function(data) {
+					if (data.status) {
+						$('#form_nilai').slideUp(300);
+						$('#data_nilai').slideDown(400);
+						if (data.save) {
+							if (state=='Simpan') { msg = 'Data Kriteria Nilai Ujian sudah disimpan'; } 
+							else { msg = 'Data Kriteria Nilai Ujian sudah diubah'; }
+							$.toast({ text:msg });
+							reload_table_tahap();
+							reload_table_nilai();
+						}
+					} 					
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					if (state=='Simpan') { msg = "Error Simpan"; }
+					else { msg = "Error Update"; }
+					$.toast({ text : msg });
+				}
+			});
+		}
+		
 		function delete_data(){
 			$.ajax({
 				url : "<?php echo site_url('prodi/delete_data')?>",
@@ -450,6 +575,10 @@
 		
 		function reload_table_syarat() {
       tabelSyarat.ajax.reload(null,false); 
+    }
+		
+		function reload_table_nilai() {
+      tabelNilai.ajax.reload(null,false); 
     }
 	});
 	
@@ -494,10 +623,9 @@
 		$('.form-group').removeClass('has-error');			
 		$('.form-group').removeClass('has-success');		
 			
-		$('#form_tahap').hide();
-		$('#data_tahap').show();
-		$('#form_syarat').hide();
-		$('#data_syarat').hide();
+		$('#form_tahap').hide();	$('#data_tahap').show();
+		$('#form_syarat').hide();	$('#data_syarat').hide();
+		$('#form_nilai').hide();	$('#data_nilai').hide();
 		$('#modal_tahap').modal('show');
 	}
 	
@@ -512,6 +640,20 @@
 			
 		$('#form_syarat').hide();
 		$('#data_syarat').slideDown(400);
+		$('#data_tahap').slideUp(300);
+	}
+	
+	function nilai_tahap(id) {
+		var table = $('#tbNilai').DataTable();
+		table.ajax.url("<?php echo site_url('ujian/ajax_list_nilai'); ?>/" + id).load();
+		
+		$('#fNilai').trigger('reset');
+		$('#fNilai').validate().resetForm();		
+		$('.form-group').removeClass('has-error');			
+		$('.form-group').removeClass('has-success');		
+			
+		$('#form_nilai').hide();
+		$('#data_nilai').slideDown(400);
 		$('#data_tahap').slideUp(300);
 	}
 	
@@ -611,6 +753,35 @@
 			$('#cbSyarat').html('<option value="">-- Gagal memuat --</option>').prop('disabled', false);
 			alert('Gagal memuat data.');
     });
+	}
+	
+	function edit_kriteria(id) {
+    $.ajax({
+			url : "<?php echo site_url('ujian/ajax_kriteria/')?>/" + id,
+			type: "GET",
+			dataType: "JSON",
+			success: function(data)
+			{
+				$('#fNilai').trigger('reset');
+				$('#fNilai').validate().resetForm();
+				$('.form-group').removeClass('has-error');			
+				$('.form-group').removeClass('has-success');
+				
+				$('#idNilai').val(data.data.id_kriteria);
+				$('#nilai').val(data.data.nm_kriteria);
+				$('#pNilaiThp').val(data.data.pers_nilai);
+				
+				$('#btSaveNilai').text('Update');
+				$('#title-form').text('Ubah Data Kriteria Nilai Ujian');				
+				$('#form_nilai').slideToggle(400);
+				$('#data_nilai').slideToggle(300);
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				//alert('Error get data from ajax');
+				alert(jqXHR.responseText); 
+			}
+		});
 	}
 </script>	
 </head>

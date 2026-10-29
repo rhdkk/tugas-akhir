@@ -251,6 +251,35 @@ $this->load->view('template/navigation',$var);
 						</div>
 					</form>
 				</div>
+				<div class="well bg-white" id="form_nilai" style="display: none; padding:0px">
+					<form action="#" id="fNilai" class="form-horizontal" method="POST">
+						<input name="idTahapNilai" id="idTahapNilai" type="hidden"/>
+						<input name="idNilai" id="idNilai" type="hidden"/>
+						<div class="modal-header">							
+							<h4 class="modal-title" id="title-form-syarat">Form Kriteria Nilai Ujian</h4>
+						</div>
+						<div class="modal-body form">
+							<div class="form-body">
+								<div class="form-group">
+									<label class="control-label col-md-3">Kriteria Penilaian</label>
+									<div class="col-md-8">
+										<input name="nilai" id="nilai" class="form-control" type="text" />										
+									</div>
+								</div>
+								<div class="form-group" id="groupPemb">
+									<label class="control-label col-md-3">% Penilaian</label>
+									<div class="col-md-2">
+										<input name="pNilaiThp" id="pNilaiThp" class="form-control skor" type="text" oninput="this.value = this.value.replace(/[^0-9]/g,'')"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" id="btSaveNilai" class="btn btn-primary">Save</button>
+							<button type="button" id="btBatalNilai" class="btn btn-danger">Batal</button>
+						</div>
+					</form>
+				</div>
 				<div class="well bg-white" id="data_tahap" style="padding-bottom:0px">					
 					<button type="button" id="addTahap" class="btn btn-xs btn-primary"><span class="	glyphicon glyphicon-plus"></span> Tambah</button>
 					<input name="idPS" id="idPS" type="hidden"/><input name="p1" id="p1" type="hidden"/><input name="p2" id="p2" type="hidden"/>
@@ -269,6 +298,18 @@ $this->load->view('template/navigation',$var);
 					<table id="tbSyarat" class="table table-striped table-hover display responsive" cellspacing="0" width="100%">
 						<thead><tr><th>#</th><th>Syarat Ujian</th><th>Jenis</th><th></th></tr></thead>
 						<tfoot><tr><td></td><td></td><td></td><td></td></tr></tfoot>
+					</table>
+				</div>
+				<div class="well bg-white" id="data_nilai" style="display: none; padding-top:0px; padding-bottom:0px">
+					<div class="well-header" style="display: flex; align-items: center; justify-content: space-between;">								
+						<h4 class="well-title" id="title-nilai" style="margin: 0; padding-left:19px">Well Title</h4>
+						<button type="button" id="closeNilai" class="btn-xs close" style="padding-right:19px; font-size:15px; margin: 0;"><span class="glyphicon glyphicon-chevron-down"></span></button>
+					</div>
+					<button type="button" id="addNilai" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-plus"></span> Tambah</button>						
+					<input name="idTU" id="idTU" type="hidden"/>
+					<table id="tbNilai" class="table table-striped table-hover display responsive" cellspacing="0" width="100%">
+						<thead><tr><th>Kriteria Penilaian</th><th>%</th><th></th></tr></thead>
+						<tfoot><tr><td></td><td></td><td></td></tr></tfoot>
 					</table>
 				</div>
 			</div>			

@@ -65,6 +65,16 @@ class Md_tuji extends CI_Model {
 		$data = $this->db->query($str);
 		return $data->result_array();				
 	}	
+	public function getKriteriaNilai($id)
+	{
+		$str = "SELECT tu.nm_tuji, k.nm_kriteria, k.id_kriteria, k.pers_nilai ";
+		$str .= "FROM kriteria_nilai k ";
+		$str .= "INNER JOIN tahap_ujian tu ON k.id_tuji=tu.id_tuji ";
+		$str .= "WHERE tu.id_tuji=".$id." AND k.stat=1 ";
+		$str .= "ORDER BY k.nm_kriteria";
+		$data = $this->db->query($str);
+		return $data->result_array();				
+	}	
 	public function getFirst($prodi)
 	{
 		$str = "SELECT id_tuji FROM tahap_ujian WHERE stat=1 AND id_ps=".$prodi." ORDER BY urut_tuji ASC LIMIT 1";
